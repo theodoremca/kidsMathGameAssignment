@@ -89,6 +89,7 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Consumer<Level>(
                         builder: (context, levelIs, child) {
+
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,

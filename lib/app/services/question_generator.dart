@@ -93,6 +93,13 @@ class QuestionGenerator {
       _option = _random.nextInt(randomMax);
       return answer == _option ? _generateOption(answer: answer,randomMax: randomMax):_option;
     }
+
+    _generateOption2({answer,randomMax,option1}){
+      final _random = new Random();
+      int _option;
+      _option = _random.nextInt(randomMax);
+      return answer == _option || _option == option1 ? _generateOption2(answer: answer,randomMax: randomMax,option1: option1):_option;
+    }
     List shuffle(List items) {
       var random = new Random();
 
@@ -109,7 +116,8 @@ class QuestionGenerator {
 
       return items;
     }
-    List _options = [answer,_generateOption(answer:answer , randomMax: range),_generateOption(answer: answer,randomMax: range)];
+    int option1 = _generateOption(answer:answer , randomMax: range);
+    List _options = [answer,option1,_generateOption2(answer: answer,randomMax: range,option1:option1)];
     return shuffle(_options);
   }
 

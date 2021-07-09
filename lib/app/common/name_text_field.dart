@@ -47,7 +47,7 @@ class _NameTextFieldState extends State<NameTextField> {
           disabledBorder: InputBorder.none,
           contentPadding:
               EdgeInsets.only(left: 15, bottom: 11, top: 11, right: 15),
-          hintText: "Oyelade"),
+          hintText: "Oyinlade"),
     );
   }
 }
