@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/countdown_timer_controller.dart';
 import 'package:flutter_countdown_timer/current_remaining_time.dart';
@@ -24,12 +28,31 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> {
+  AudioPlayer audioPlayer = AudioPlayer();
+  AudioCache audioCache;
+  AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
+  String filePath = 'option_tap.wav';
   CountdownTimerController controller;
   bool canPop = false;
+
+  playLocal() async {
+    await audioCache.play(filePath);
+    // int result = await audioPlayer.play('audiosthemesound.mp3', isLocal: true);
+  }
 
   @override
   void initState() {
     super.initState();
+    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+      setState(() {
+        audioPlayerState = s;
+      });
+    });
+      audioPlayer = AudioPlayer();
+      audioCache = AudioCache(fixedPlayer: audioPlayer);
+      super.initState();
+
+
 
     int duration = widget.level == 1 ? 20 : 10;
     if (widget.level != 0) {
@@ -41,9 +64,8 @@ class _GameState extends State<Game> {
 
 
   onEnd() {
-    controller.disposeTimer();
-    controller.dispose();
     nextQuestion();
+    controller.dispose();
   }
 
   nextQuestion(){
@@ -65,6 +87,9 @@ class _GameState extends State<Game> {
 
   @override
   void dispose() {
+    audioPlayer.release();
+    audioPlayer.dispose();
+    audioCache.clearCache();
     controller.dispose();
     super.dispose();
   }
@@ -254,25 +279,59 @@ class _GameState extends State<Game> {
   }
 }
 
-class OptionButton extends StatelessWidget {
+class OptionButton extends StatefulWidget {
   const OptionButton({Key key, this.option, this.answer, this.onTap})
       : super(key: key);
   final option;
   final answer;
   final VoidCallback onTap;
 
+  @override
+  _OptionButtonState createState() => _OptionButtonState();
+}
+
+class _OptionButtonState extends State<OptionButton> {
+  AudioPlayer audioPlayer = AudioPlayer();
+  AudioCache audioCache;
+  AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
+  List winSounds = ["win_1.wav","win_2.wav","win_3.wav","win_3.wav"];
+  String filePathWin = 'win_1.wav';
+  String filePathFail = 'wrong_answer.wav';
    correct() {
-    onTap();
-    print(" it is === ${option.toString() == answer.toString()}");
-    if(option.toString() == answer.toString()){
+    widget.onTap();
+    print(" it is === ${widget.option.toString() == widget.answer.toString()}");
+    if(widget.option.toString() == widget.answer.toString()){
       score++;
+      final _random = new Random();
+      playLocal(winSounds[_random.nextInt(3)]);
+    }
+    if(widget.option.toString() != widget.answer.toString()){
+      playLocal(filePathFail);
     }
 
-    return option.toString() == answer.toString();
+    return widget.option.toString() == widget.answer.toString();
+  }
+
+  void initState() {
+    super.initState();
+    audioPlayer = AudioPlayer();
+    audioCache = AudioCache(fixedPlayer: audioPlayer);
+    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+      setState(() {
+        audioPlayerState = s;
+      });
+    });
+
+  }
+
+  playLocal(String x) async {
+    await audioCache.play(x);
+    // int result = await audioPlayer.play('audios/themesound.mp3', isLocal: true);
   }
 
   @override
   Widget build(BuildContext context) {
+
     return GestureDetector(
       onTap: correct,
       child: Padding(
@@ -306,7 +365,7 @@ class OptionButton extends StatelessWidget {
                       top: 14,
                       left: 62,
                       child: Text(
-                        option.toString(),
+                        widget.option.toString(),
                         textAlign: TextAlign.left,
                         style: TextStyle(
                             color: Color.fromRGBO(240, 115, 1, 1),

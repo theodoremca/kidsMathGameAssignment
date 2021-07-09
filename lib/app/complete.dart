@@ -1,3 +1,5 @@
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unit7_mobile_dev/app/common/level_button.dart';
@@ -6,7 +8,35 @@ import 'package:unit7_mobile_dev/landing_page.dart';
 
 import 'common/score.dart';
 
-class Complete extends StatelessWidget {
+class Complete extends StatefulWidget {
+  @override
+  _CompleteState createState() => _CompleteState();
+}
+
+class _CompleteState extends State<Complete> {
+
+  AudioPlayer audioPlayer = AudioPlayer();
+  AudioCache audioCache;
+  AudioPlayerState audioPlayerState = AudioPlayerState.PAUSED;
+  String filePath = 'complete.wav';
+
+  playLocal(String x) async {
+    await audioCache.play(x);
+    // int result = await audioPlayer.play('audios/themesound.mp3', isLocal: true);
+  }
+
+  void initState() {
+    super.initState();
+    audioPlayer = AudioPlayer();
+    audioCache = AudioCache(fixedPlayer: audioPlayer);
+    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+      setState(() {
+        audioPlayerState = s;
+      });
+    });
+    playLocal(filePath);
+
+  }
 @override
 Widget build(BuildContext context) {
   void toHome() {
@@ -89,6 +119,4 @@ Widget build(BuildContext context) {
             )),
       ));
 }
-
-
 }

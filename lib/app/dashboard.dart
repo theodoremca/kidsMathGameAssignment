@@ -36,11 +36,14 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
+    audioPlayer = AudioPlayer();
+    audioCache = AudioCache(fixedPlayer: audioPlayer);
     audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
       setState(() {
         audioPlayerState = s;
       });
     });
+    playLocal();
   }
 
   @override
@@ -49,10 +52,13 @@ class _DashboardState extends State<Dashboard> {
     audioPlayer.dispose();
     audioCache.clearCache();
     super.dispose();
+
   }
 
   @override
   Widget build(BuildContext context) {
+    audioPlayer = AudioPlayer();
+    audioCache = AudioCache(fixedPlayer: audioPlayer);
 
     return ChangeNotifierProvider<Level>(
         create: (_) => Level(),
