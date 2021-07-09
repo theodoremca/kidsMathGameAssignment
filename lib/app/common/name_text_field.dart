@@ -1,7 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:unit7_mobile_dev/landing_page.dart';
 
 class NameTextField extends StatefulWidget {
   const NameTextField({
@@ -18,6 +17,8 @@ class _NameTextFieldState extends State<NameTextField> {
   Future _setName() async {
     SharedPreferences _prefs = await SharedPreferences.getInstance();
     _prefs.setString('player_name', _nameController.text);
+    Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (BuildContext context) => LandingPage()));
   }
   void _saveText() => _setName();
 

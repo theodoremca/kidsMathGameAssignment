@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
             duration: 5000,
             imageSize: 274,
             imageSrc: "assets/splashscreen_image.png",
-            backgroundColor: Unit7Colors.color1,
+            backgroundColor: Unit7Colors.colorWhite,
           ),
         ));
   }

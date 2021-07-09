@@ -1,3 +1,5 @@
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:unit7_mobile_dev/app/dashboard.dart';
@@ -12,6 +14,19 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
+  AudioPlayer audioPlayer = AudioPlayer();
+  AudioCache audioCache;
+  String filePath = 'audios/themesound.mp3';
+
+  playLocal() async {
+    await audioCache.play(filePath);
+    // int result = await audioPlayer.play('audios/themesound.mp3', isLocal: true);
+  }
+  @override
+  void initState() {
+    super.initState();
+    playLocal();
+  }
   @override
   Widget build(BuildContext context) {
     return Consumer<PlayerBase>(
